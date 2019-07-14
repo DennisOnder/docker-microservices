@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "test": "exit 0"
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.1",
+    "mocha": "^6.1.4"
+  }
+}

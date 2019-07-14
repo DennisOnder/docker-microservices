@@ -9,7 +9,7 @@ module.exports = () => {
     process.exit(1);
   }
   mongoose.connect(
-    `mongodb://localhost:${config.DB_PORT}/messages'`,
+    `mongodb://localhost:${config.DB_PORT}/messages`,
     { useNewUrlParser: true },
     err => {
       if (err) {

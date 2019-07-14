@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const config = require("./config");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
-const validateInput = require("./middleware/validateInput");
 const User = require("./models/User");
 const isEmpty = require("./functions/isEmpty");
 
@@ -22,7 +21,7 @@ router.post("/register", async (req, res) => {
     }
     const newUser = new User({
       email: req.body.email,
-      password: bcrypt.hashSync(req.body.password, config.SECRET_OR_KEY)
+      password: bcrypt.hashSync(req.body.password, 10)
     });
     await newUser.save().then(user => res.status(200).json(user));
   } catch (error) {
@@ -30,7 +29,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.post("/login", validateInput, async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
@@ -67,7 +66,7 @@ router.post("/login", validateInput, async (req, res) => {
 });
 
 router.delete(
-  "/",
+  "/delete",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
