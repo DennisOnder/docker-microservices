@@ -1,0 +1,14 @@
+version: '3'
+services:
+  auth:
+    build: './services/auth'
+    ports: 
+      - "8001:8001"
+  messages:
+    build: './services/messages'
+    ports: 
+      - "8002:8002"
+  web:
+    build: './services/web'
+    ports: 
+      - "8003:8003"
