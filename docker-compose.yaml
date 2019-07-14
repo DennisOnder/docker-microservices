@@ -3,15 +3,25 @@ services:
   auth_db:
     image: 'mongo:latest'
     ports: 
-      - '27017:27017'
+      - '8101:27017'
+  msg_db:
+    image: 'mongo:latest'
+    ports: 
+      - '8102:27017'
   auth:
     build: './services/auth'
+    environment: 
+      - DB_PORT=8101
     depends_on: 
       - 'auth_db'
     ports: 
       - '8001:8001'
   messages:
     build: './services/messages'
+    environment: 
+      - DB_PORT=8102
+    depends_on: 
+      - 'msg_db'
     ports: 
       - '8002:8002'
   web:
