@@ -2,6 +2,9 @@ const app = require("express")();
 const connectDB = require("./config/database");
 const config = require("./config");
 const router = require("./router");
+const middleware = require("./middleware");
+
+middleware(app);
 
 app.use(router);
 

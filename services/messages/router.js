@@ -1,9 +1,6 @@
 const router = require("express").Router();
+const isEmpty = require("./functions/isEmpty");
 const Message = require("./models/Message");
-const validateInput = require("./middleware/validateInput");
-const validateUser = require("./middleware/validateUser");
-
-router.get("/", (req, res) => res.send("Messaging service!"));
 
 router.get("/messages", async (req, res) => {
   try {
@@ -19,14 +16,18 @@ router.get("/messages", async (req, res) => {
 });
 
 // TODO => Replace promise with an event
-router.post("/message", validateUser, validateInput, (req, res) => {
+router.post("/message", (req, res) => {
+  if (isEmpty(req.body.message)) {
+    res.status(400).json({ error: "Please provide a message." });
+    return;
+  }
   new Message({ body: req.body.message, createdBy: req.user.id })
     .save()
     .then(message => res.status(200).json(message))
     .catch(err => console.error(err));
 });
 
-router.delete("/:messageId", validateUser, async (req, res) => {
+router.delete("/:messageId", async (req, res) => {
   try {
     const message = await Message.findOne({
       _id: req.params.messageId,

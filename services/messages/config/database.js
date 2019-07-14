@@ -4,7 +4,7 @@ const config = require("./");
 let attemptCounter = 0;
 
 module.exports = () => {
-  if (attemptCounter < 3) {
+  if (attemptCounter > 3) {
     console.error("Unable to connect to the messaging database.");
     process.exit(1);
   }

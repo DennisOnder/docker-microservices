@@ -5,14 +5,19 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const validateInput = require("./middleware/validateInput");
 const User = require("./models/User");
+const isEmpty = require("./functions/isEmpty");
 
 router.get("/", (req, res) => res.send("Auth service!"));
 
-router.post("/register", validateInput, async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       res.status(403).json({ error: "User already exists." });
+      return;
+    }
+    if (isEmpty(req.body.email) || isEmpty(req.body.password)) {
+      res.status(400).json({ error: "Please provide valid credentials." });
       return;
     }
     const newUser = new User({
@@ -30,6 +35,10 @@ router.post("/login", validateInput, async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
       res.status(404).json({ error: "User does not exist." });
+      return;
+    }
+    if (isEmpty(req.body.email) || isEmpty(req.body.password)) {
+      res.status(400).json({ error: "Please provide valid credentials." });
       return;
     }
     const passwordMatch = await bcrypt.compareSync(
