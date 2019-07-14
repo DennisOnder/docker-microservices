@@ -1,5 +1,8 @@
 const app = require("express")();
 const config = require("./config");
+const middleware = require("./middleware");
+
+middleware(app);
 
 app.get("/", (req, res) => res.send("Web service!"));
 
