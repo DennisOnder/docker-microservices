@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-ENV NODE_ENV=staging
+ENV NODE_ENV=docker
 
 ENV PORT=8002
 

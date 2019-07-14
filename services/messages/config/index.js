@@ -1,3 +1,4 @@
 module.exports = {
-  PORT: 8002
+  PORT: process.env.PORT || 9002,
+  SECRET_OR_KEY: process.env.SECRET_OR_KEY || "secret"
 };
