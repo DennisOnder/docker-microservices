@@ -1,7 +1,8 @@
 const app = require("express")();
 const config = require("./config");
+const router = require("./router");
 
-app.get("/", (req, res) => res.send("Messaging service!"));
+app.use(router);
 
 app.listen(config.PORT, err => {
   if (err) {
