@@ -1,6 +1,7 @@
 {
   "name": "web-service",
   "version": "1.0.0",
+  "repository": "https://github.com/DennisOnder/docker-microservices.git",
   "description": "Web service",
   "main": "index.js",
   "scripts": {
