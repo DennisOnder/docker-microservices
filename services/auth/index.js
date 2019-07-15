@@ -20,7 +20,7 @@ app.listen(config.PORT, err => {
     process.exit(1);
   }
   console.log(
-    `Authentication service running on port ${config.PORT} in the ${
+    `Authentication service running on http://localhost:${config.PORT} in the ${
       config.ENV
     } environment.`
   );

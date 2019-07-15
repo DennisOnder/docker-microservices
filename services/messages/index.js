@@ -18,7 +18,7 @@ app.listen(config.PORT, err => {
     process.exit(1);
   }
   console.log(
-    `Messaging service running on port ${config.PORT} in the ${
+    `Messaging service running on http://localhost:${config.PORT} in the ${
       config.ENV
     } environment.`
   );

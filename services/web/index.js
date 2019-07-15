@@ -1,10 +1,11 @@
 const app = require("express")();
 const config = require("./config");
 const middleware = require("./middleware");
+const router = require("./router");
 
 middleware(app);
 
-app.get("/", (req, res) => res.send("Web service!"));
+app.use(router);
 
 app.listen(config.PORT, err => {
   if (err) {
@@ -12,7 +13,7 @@ app.listen(config.PORT, err => {
     process.exit(1);
   }
   console.log(
-    `Web service running on port ${config.PORT} in the ${
+    `Web service running on http://localhost:${config.PORT} in the ${
       config.ENV
     } environment.`
   );

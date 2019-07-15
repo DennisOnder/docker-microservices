@@ -1,9 +1,14 @@
 {
   "scripts": {
+    "start:auth": "cd services/auth && nodemon .",
+    "start:messages": "cd services/messages && nodemon .",
+    "start:web": "cd services/web && nodemon .",
+    "start": "concurrently \"npm run start:auth\" \"npm run start:messages\" \"npm run start:web\"",
     "test": "exit 0"
   },
   "devDependencies": {
     "concurrently": "^4.1.1",
-    "mocha": "^6.1.4"
+    "mocha": "^6.1.4",
+    "nodemon": "^1.19.1"
   }
 }
