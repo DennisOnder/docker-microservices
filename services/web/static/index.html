@@ -102,10 +102,36 @@
             email: document.getElementById("email-input").value,
             password: document.getElementById("password-input").value
           };
-          fetch("http://localhost:9001/register", { method: "POST" }, data)
-            .then(res => console.log(res.json()))
+          console.log(data);
+          fetch("http://localhost:9001/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          })
+            .then(res => res.json())
+            .then(data => console.log(data))
             .catch(err => console.error(err));
         });
+
+      document.getElementById("login-button").addEventListener("click", () => {
+        const data = {
+          email: document.getElementById("email-input").value,
+          password: document.getElementById("password-input").value
+        };
+        console.log(data);
+        fetch("http://localhost:9001/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        })
+          .then(res => res.json())
+          .then(data => console.log(data))
+          .catch(err => console.error(err));
+      });
     </script>
   </body>
 </html>
