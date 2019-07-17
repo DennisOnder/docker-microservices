@@ -49,7 +49,7 @@ router.post("/login", async (req, res) => {
       return;
     }
     jwt.sign(
-      { id: user.id },
+      { id: user.id, email: user.email },
       config.SECRET_OR_KEY,
       { expiresIn: 86400 },
       (err, token) => {

@@ -21,7 +21,7 @@ router.post("/message", (req, res) => {
     res.status(400).json({ error: "Please provide a message." });
     return;
   }
-  new Message({ body: req.body.message, createdBy: req.user.id })
+  new Message({ body: req.body.message, createdBy: req.user.email })
     .save()
     .then(message => res.status(200).json(message))
     .catch(err => console.error(err));
