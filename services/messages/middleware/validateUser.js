@@ -2,8 +2,9 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 
 module.exports = (req, res, next) => {
+  const token = req.headers.authorization || "";
   jwt.verify(
-    req.headers.authorization.replace("Bearer ", ""),
+    token.replace("Bearer ", ""),
     config.SECRET_OR_KEY,
     (err, decoded) => {
       if (err) {
