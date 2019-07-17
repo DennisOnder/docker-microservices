@@ -47,6 +47,13 @@
       align-items: center;
       margin-bottom: 0;
     }
+
+    #error-output {
+      color: red;
+      font-weight: bold;
+      font-size: 24px;
+      margin-top: 10px;
+    }
   </style>
   <body>
     <div id="form" class="form">
@@ -89,12 +96,14 @@
         </div>
       </div>
     </div>
+    <p id="error-output"></p>
     <script
       defer
       src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
     ></script>
     <script>
       /* eslint-disable no-undef */
+      const errorOutput = document.getElementById("error-output");
       document
         .getElementById("register-button")
         .addEventListener("click", () => {
@@ -111,7 +120,11 @@
             body: JSON.stringify(data)
           })
             .then(res => res.json())
-            .then(data => console.log(data))
+            .then(data =>
+              data.error
+                ? (errorOutput.innerHTML = data.error)
+                : console.log("Registered!")
+            )
             .catch(err => console.error(err));
         });
 
@@ -120,7 +133,6 @@
           email: document.getElementById("email-input").value,
           password: document.getElementById("password-input").value
         };
-        console.log(data);
         fetch("http://localhost:9001/login", {
           method: "POST",
           headers: {
@@ -129,7 +141,11 @@
           body: JSON.stringify(data)
         })
           .then(res => res.json())
-          .then(data => console.log(data))
+          .then(data =>
+            data.error
+              ? (errorOutput.innerHTML = data.error)
+              : console.log("Logged In!")
+          )
           .catch(err => console.error(err));
       });
     </script>
