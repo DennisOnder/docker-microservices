@@ -111,7 +111,6 @@
             email: document.getElementById("email-input").value,
             password: document.getElementById("password-input").value
           };
-          console.log(data);
           fetch("http://localhost:9001/register", {
             method: "POST",
             headers: {
