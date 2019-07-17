@@ -48,8 +48,7 @@
       margin-bottom: 0;
     }
 
-    #error-output {
-      color: red;
+    #msg-output {
       font-weight: bold;
       font-size: 24px;
       margin-top: 10px;
@@ -96,14 +95,14 @@
         </div>
       </div>
     </div>
-    <p id="error-output"></p>
+    <p id="msg-output"></p>
     <script
       defer
       src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
     ></script>
     <script>
       /* eslint-disable no-undef */
-      const errorOutput = document.getElementById("error-output");
+      const msgOutput = document.getElementById("msg-output");
       document
         .getElementById("register-button")
         .addEventListener("click", () => {
@@ -119,11 +118,15 @@
             body: JSON.stringify(data)
           })
             .then(res => res.json())
-            .then(data =>
-              data.error
-                ? (errorOutput.innerHTML = data.error)
-                : console.log("Registered!")
-            )
+            .then(data => {
+              if (data.error) {
+                msgOutput.style.color = "red";
+                msgOutput.innerHTML = data.error;
+              } else {
+                msgOutput.style.color = "green";
+                msgOutput.innerHTML = "Registered!";
+              }
+            })
             .catch(err => console.error(err));
         });
 
@@ -140,11 +143,15 @@
           body: JSON.stringify(data)
         })
           .then(res => res.json())
-          .then(data =>
-            data.error
-              ? (errorOutput.innerHTML = data.error)
-              : (document.cookie = `token=${data.token}`)
-          )
+          .then(data => {
+            if (data.error) {
+              msgOutput.style.color = "red";
+              msgOutput.innerHTML = data.error;
+            } else {
+              document.cookie = `token=${data.token}`;
+              window.location.href = "/dashboard";
+            }
+          })
           .catch(err => console.error(err));
       });
     </script>

@@ -6,8 +6,22 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Dashboard</title>
   </head>
+  <style>
+    .message {
+      background-color: #666;
+    }
+  </style>
   <body>
     <h1>Dashboard</h1>
+    <div id="output">
+      <div class="message">
+        <p>User:</p>
+        <p>
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus,
+          labore?
+        </p>
+      </div>
+    </div>
     <script>
       const tokens = document.cookie.split("; ");
       const token = tokens
@@ -21,9 +35,19 @@
       })
         .then(res => res.json())
         .then(data =>
-          data.error ? (window.location.href = "/") : console.log(data)
+          data.error ? (window.location.href = "/") : setData(data)
         )
         .catch(err => (window.location.href = "/"));
+
+      const createMsg = msg => `<div class="message"><p>User: ${msg._id}</p>
+        <p>
+          ${msg.body}
+        </p></div>`;
+      const setData = data => {
+        data.map(
+          msg => (document.getElementById("output").innerHTML += createMsg(msg))
+        );
+      };
     </script>
   </body>
 </html>
