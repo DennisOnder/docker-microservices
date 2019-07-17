@@ -6,10 +6,10 @@ COPY . .
 
 ENV NODE_ENV=docker
 
-ENV PORT=8002
+ENV PORT=9002
 
 RUN npm install
 
-EXPOSE 8002
+EXPOSE 9002
 
 CMD ["npm", "start"]
