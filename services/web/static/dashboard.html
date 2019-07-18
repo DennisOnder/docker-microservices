@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"
+      integrity="sha256-vK3UTo/8wHbaUn+dTQD0X6dzidqc5l7gczvH+Bnowwk="
+      crossorigin="anonymous"
+    />
     <title>Dashboard</title>
   </head>
   <style>
@@ -15,11 +25,14 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
+      /* align-items: center; */
       background-color: #333;
+      font-family: "Roboto", Arial, Helvetica, sans-serif;
+      color: #fff;
     }
     .message {
       background-color: #666;
+      margin: 0 0 5px 0 !important;
     }
     #input {
       position: fixed;
@@ -33,39 +46,72 @@
     }
   </style>
   <body>
-    <h1>Dashboard</h1>
     <div id="output"></div>
     <div id="input">
-      <input type="text" placeholder="Message:" />
-      <button>Sumbit</button>
+      <input id="msg-input" type="text" placeholder="Message:" />
+      <button id="submit-btn">Sumbit</button>
     </div>
     <script>
-      const tokens = document.cookie.split("; ");
-      const token = tokens
-        .filter(token => token.includes("token"))[0]
-        .replace("token=", "");
-      fetch("http://localhost:9002/messages", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token
-        }
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.error) console.log(data.error);
-          if (Array.isArray(data)) setData(data);
-        })
-        .catch(err => (window.location.href = "/"));
-
-      const createMsg = msg => `<div class="message"><p>${msg.createdBy}</p>
+      // Functions
+      const renderMsg = msg => `<div class="message"><p>${msg.createdBy}</p>
         <p>
           ${msg.body}
         </p></div>`;
+      const submitMsg = message => {
+        const token = getToken();
+        if (!token) window.location.href("/");
+        fetch("http://localhost:9002/message", {
+          method: "POST",
+          body: JSON.stringify({ message }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token
+          }
+        })
+          .then(res => res.json())
+          .then(data => console.log(data))
+          .catch(err => console.error(err));
+      };
       const setData = data => {
         data.map(
-          msg => (document.getElementById("output").innerHTML += createMsg(msg))
+          msg => (document.getElementById("output").innerHTML += renderMsg(msg))
         );
       };
+      const getToken = () => {
+        if (!document.cookie.includes("token")) return false;
+        const tokens = document.cookie.split("; ");
+        return tokens
+          .filter(token => token.includes("token"))[0]
+          .replace("token=", "");
+      };
+
+      // IIFE
+      (function IIFE() {
+        const token = getToken();
+        if (!token) window.location.href("/");
+        fetch("http://localhost:9002/messages", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token
+          }
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.error) console.log(data.error);
+            if (Array.isArray(data)) setData(data);
+          })
+          .catch(err => (window.location.href = "/"));
+      })();
+
+      // Elements
+      const msgInput = document.getElementById("msg-input");
+      const submitBtn = document.getElementById("submit-btn");
+
+      // Events
+      submitBtn.addEventListener("click", () => submitMsg(msgInput.value));
+      msgInput.addEventListener("keypress", e =>
+        e.keyCode === 13 || e.which === 13 ? submitMsg(msgInput.value) : false
+      );
     </script>
   </body>
 </html>
