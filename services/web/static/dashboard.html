@@ -78,14 +78,14 @@
             Authorization: token
           }
         })
-          .then(res => res.json())
-          .then(data => console.log(data))
+          .then(() => getData())
           .catch(err => console.error(err));
       };
       const setData = data => {
-        data.map(
-          msg => (document.getElementById("output").innerHTML += renderMsg(msg))
-        );
+        const output = document.getElementById("output");
+        output.innerHTML = "";
+        data.map(msg => (output.innerHTML += renderMsg(msg)));
+        output.scrollTop = output.scrollHeight;
       };
       const getToken = () => {
         if (!document.cookie.includes("token")) return false;
@@ -94,9 +94,7 @@
           .filter(token => token.includes("token"))[0]
           .replace("token=", "");
       };
-
-      // IIFE
-      (function IIFE() {
+      const getData = () => {
         const token = getToken();
         if (!token) window.location.href("/");
         fetch("http://localhost:9002/messages", {
@@ -111,6 +109,11 @@
             if (Array.isArray(data)) setData(data);
           })
           .catch(err => (window.location.href = "/"));
+      };
+
+      // IIFE
+      (function IIFE() {
+        getData();
       })();
 
       // Elements
