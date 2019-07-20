@@ -140,6 +140,7 @@
           email: document.getElementById("email-input").value,
           password: document.getElementById("password-input").value
         };
+        localStorage.setItem("email", data.email);
         fetch("http://localhost:9001/login", {
           method: "POST",
           headers: {

@@ -9,6 +9,12 @@
       rel="stylesheet"
     />
     <link
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+      crossorigin="anonymous"
+    />
+    <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"
       integrity="sha256-vK3UTo/8wHbaUn+dTQD0X6dzidqc5l7gczvH+Bnowwk="
@@ -34,8 +40,15 @@
       background-color: #666;
       margin: 0 20px 5px 20px !important;
     }
-    .message p {
+    .message p,
+    .message i {
       margin: 5px 0 5px 10px;
+    }
+
+    .message i {
+      cursor: pointer;
+      color: rgb(255, 65, 65);
+      font-size: 26px;
     }
     #output {
       width: 100%;
@@ -70,10 +83,18 @@
     </div>
     <script>
       // Functions
-      const renderMsg = msg => `<div class="message"><p>${msg.createdBy}</p>
+      const renderMsg = msg => `<div class="message" data-id="${msg._id}"><p>${
+        msg.createdBy
+      }</p>
         <p>
           ${msg.body}
-        </p></div>`;
+        </p>
+        ${
+          localStorage.email === msg.createdBy
+            ? `<i class="fa fa-trash"></i>`
+            : ""
+        }
+        </div>`;
       const submitMsg = message => {
         const token = getToken();
         if (!token) window.location.href("/");
@@ -93,6 +114,14 @@
         output.innerHTML = "";
         data.map(msg => (output.innerHTML += renderMsg(msg)));
         output.scrollTop = output.scrollHeight;
+        const deleteBtns = document.getElementsByClassName("fa-trash");
+        for (let i = 0; i < deleteBtns.length; i++) {
+          const element = deleteBtns[i];
+          element.addEventListener("click", e => {
+            const id = e.target.parentElement.getAttribute("data-id");
+            deleteMsg(id);
+          });
+        }
       };
       const getToken = () => {
         if (!document.cookie.includes("token")) return false;
@@ -116,6 +145,20 @@
             if (Array.isArray(data)) setData(data);
           })
           .catch(err => (window.location.href = "/"));
+      };
+      const deleteMsg = id => {
+        const token = getToken();
+        if (!token) window.location.href("/");
+        fetch(`http://localhost:9002/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token
+          }
+        })
+          .then(res => res.json())
+          .then(data => console.log(data))
+          .catch(err => console.error(err));
       };
 
       // IIFE
