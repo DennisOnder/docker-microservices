@@ -81,8 +81,19 @@
       <input id="msg-input" type="text" placeholder="Message:" />
       <button id="submit-btn">Sumbit</button>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script>
+      // Socket connection
+      const socket = io("http://localhost:9002");
+
       // Functions
+      const getToken = () => {
+        if (!document.cookie.includes("token")) return false;
+        const tokens = document.cookie.split("; ");
+        return tokens
+          .filter(token => token.includes("token"))[0]
+          .replace("token=", "");
+      };
       const renderMsg = msg => `<div class="message" data-id="${msg._id}"><p>${
         msg.createdBy
       }</p>
@@ -95,20 +106,6 @@
             : ""
         }
         </div>`;
-      const submitMsg = message => {
-        const token = getToken();
-        if (!token) window.location.href("/");
-        fetch("http://localhost:9002/message", {
-          method: "POST",
-          body: JSON.stringify({ message }),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          }
-        })
-          .then(() => getData())
-          .catch(err => console.error(err));
-      };
       const setData = data => {
         const output = document.getElementById("output");
         output.innerHTML = "";
@@ -123,28 +120,19 @@
           });
         }
       };
-      const getToken = () => {
-        if (!document.cookie.includes("token")) return false;
-        const tokens = document.cookie.split("; ");
-        return tokens
-          .filter(token => token.includes("token"))[0]
-          .replace("token=", "");
-      };
-      const getData = () => {
+      const submitMsg = message => {
         const token = getToken();
         if (!token) window.location.href("/");
-        fetch("http://localhost:9002/messages", {
+        fetch("http://localhost:9002/message", {
+          method: "POST",
+          body: JSON.stringify({ message }),
           headers: {
             "Content-Type": "application/json",
             Authorization: token
           }
         })
-          .then(res => res.json())
-          .then(data => {
-            if (data.error) console.log(data.error);
-            if (Array.isArray(data)) setData(data);
-          })
-          .catch(err => (window.location.href = "/"));
+          .then(() => socket.emit("get_messages"))
+          .catch(err => console.error(err));
       };
       const deleteMsg = id => {
         const token = getToken();
@@ -156,15 +144,9 @@
             Authorization: token
           }
         })
-          .then(res => res.json())
-          .then(data => console.log(data))
+          .then(() => socket.emit("get_messages"))
           .catch(err => console.error(err));
       };
-
-      // IIFE
-      (function IIFE() {
-        getData();
-      })();
 
       // Elements
       const msgInput = document.getElementById("msg-input");
@@ -175,6 +157,10 @@
       msgInput.addEventListener("keypress", e =>
         e.keyCode === 13 || e.which === 13 ? submitMsg(msgInput.value) : false
       );
+
+      // Socket events
+      socket.emit("get_messages");
+      socket.on("dispatch_messages", data => setData(data));
     </script>
   </body>
 </html>

@@ -15,7 +15,6 @@ router.get("/messages", async (req, res) => {
   }
 });
 
-// TODO => Replace promise with an event
 router.post("/message", (req, res) => {
   if (isEmpty(req.body.message)) {
     res.status(400).json({ error: "Please provide a message." });
@@ -31,7 +30,7 @@ router.delete("/:messageId", async (req, res) => {
   try {
     const message = await Message.findOne({
       _id: req.params.messageId,
-      createdBy: req.user.id
+      createdBy: req.user.email
     });
     if (!message) {
       res.status(400).json({ error: "Message not found." });
