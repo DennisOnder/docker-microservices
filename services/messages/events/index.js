@@ -7,5 +7,9 @@ module.exports = {
     } catch (error) {
       console.error(error);
     }
+  },
+  newMessage: async data => {
+    const msg = new Message({ body: data.message, createdBy: data.email });
+    console.log(msg);
   }
 };

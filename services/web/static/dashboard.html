@@ -55,12 +55,13 @@
       height: 100vh;
       margin-bottom: 50px;
       overflow: auto;
+      display: none;
     }
     #input {
+      display: none;
       position: fixed;
       bottom: 0;
       width: 100%;
-      display: flex;
       flex-direction: row;
       justify-content: center;
       align-items: center;
@@ -122,21 +123,25 @@
       };
       const submitMsg = message => {
         const token = getToken();
-        if (!token) window.location.href("/");
-        fetch("http://localhost:9002/message", {
-          method: "POST",
-          body: JSON.stringify({ message }),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token
-          }
-        })
-          .then(() => socket.emit("get_messages"))
-          .catch(err => console.error(err));
+        if (!token) window.location.href = "/";
+        socket.emit("new_message", {
+          createdBy: localStorage.email,
+          body: message
+        });
+        // fetch("http://localhost:9002/message", {
+        //   method: "POST",
+        //   body: JSON.stringify({ message }),
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     Authorization: token
+        //   }
+        // })
+        //   .then(() => socket.emit("get_messages"))
+        //   .catch(err => console.error(err));
       };
       const deleteMsg = id => {
         const token = getToken();
-        if (!token) window.location.href("/");
+        if (!token) window.location.href = "/";
         fetch(`http://localhost:9002/${id}`, {
           method: "DELETE",
           headers: {
@@ -157,6 +162,14 @@
       msgInput.addEventListener("keypress", e =>
         e.keyCode === 13 || e.which === 13 ? submitMsg(msgInput.value) : false
       );
+
+      // IIFE
+      (function() {
+        const token = getToken();
+        if (!token) window.location.href = "/";
+        document.getElementById("output").style.display = "block";
+        document.getElementById("input").style.display = "flex";
+      })();
 
       // Socket events
       socket.emit("get_messages");
